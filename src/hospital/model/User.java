@@ -25,8 +25,8 @@ public class User {
 
     // Constructor with all fields (for fetching from DB)
     public User(int userId, String username, String email,
-                String passwordHash, String role,
-                LocalDateTime createdAt) {
+            String passwordHash, String role,
+            LocalDateTime createdAt) {
 
         this.userId = userId;
         this.username = username;
@@ -102,12 +102,10 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", role='" + role + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
+        return "userId " + userId +
+                " | username " + username +
+                " | email " + email +
+                " | role " + role +
+                " | createdAt " + createdAt;
     }
 }

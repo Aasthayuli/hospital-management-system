@@ -171,4 +171,14 @@ public class Patient {
     public void setTotalBill(BigDecimal totalBill) {
         this.totalBill = totalBill;
     }
+
+    @Override
+    public String toString() {
+        return "patient Id " + patientId +
+                "| name " + name +
+                "| age " + age +
+                "| disease " + disease +
+                "| room No " + roomNo;
+
+    }
 }

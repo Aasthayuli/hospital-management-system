@@ -18,7 +18,7 @@ public class Doctor {
 
     // Constructor without ID (for insert)
     public Doctor(String name, String gender, String phone,
-                  String email, BigDecimal salary, int deptId) {
+            String email, BigDecimal salary, int deptId) {
         this.name = name;
         this.gender = gender;
         this.phone = phone;
@@ -29,8 +29,8 @@ public class Doctor {
 
     // Constructor with ID (for fetch from DB)
     public Doctor(int doctorId, String name, String gender,
-                  String phone, String email,
-                  BigDecimal salary, int deptId) {
+            String phone, String email,
+            BigDecimal salary, int deptId) {
         this.doctorId = doctorId;
         this.name = name;
         this.gender = gender;
@@ -103,14 +103,10 @@ public class Doctor {
 
     @Override
     public String toString() {
-        return "Doctor{" +
-                "doctorId=" + doctorId +
-                ", name='" + name + '\'' +
-                ", gender='" + gender + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", salary=" + salary +
-                ", deptId=" + deptId +
-                '}';
+        return "doctorId " + doctorId +
+                " | name '" + name +
+                " | gender '" + gender +
+                " | phone '" + phone +
+                " | deptId " + deptId;
     }
 }

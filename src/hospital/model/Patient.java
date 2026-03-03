@@ -178,7 +178,8 @@ public class Patient {
                 "| name " + name +
                 "| age " + age +
                 "| disease " + disease +
-                "| room No " + roomNo;
+                "| room No " + roomNo +
+                "| Status " + status;
 
     }
 }

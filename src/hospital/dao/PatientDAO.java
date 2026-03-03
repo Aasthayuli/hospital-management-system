@@ -144,4 +144,22 @@ public class PatientDAO {
 
     }
 
+    public List<Patient> getPatientsRelDoc(int doc_id) {
+        List<Patient> list = new ArrayList<>();
+        String sql = "SELECT * FROM patient WHERE doctor_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, doc_id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(extractPatient(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 }

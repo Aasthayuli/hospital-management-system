@@ -152,14 +152,17 @@ public class PatientAdmissionUI extends JFrame {
 
         JButton admitBtn = new JButton("Admit Patient");
         JButton viewBtn = new JButton("View Patients");
+        JButton deleteBtn = new JButton("Discharge Patient");
 
         buttonPanel.add(admitBtn);
         buttonPanel.add(viewBtn);
+        buttonPanel.add(deleteBtn);
 
         add(buttonPanel, BorderLayout.SOUTH);
 
         admitBtn.addActionListener(e -> admitPatient());
         viewBtn.addActionListener(e -> new PatientDetailsUI());
+        deleteBtn.addActionListener(e -> new PatientDischargeUI());
     }
 
     private void admitPatient() {

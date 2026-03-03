@@ -4,6 +4,7 @@ import hospital.dao.RoomDAO;
 import hospital.model.Room;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
@@ -12,121 +13,193 @@ public class RoomUI extends JFrame {
     private JTextField roomNumField;
     private JTextField typeField;
     private JTextField priceField;
-    private JTextArea displayArea;
+
+    private JTable roomTable;
+    private DefaultTableModel tableModel;
+
+    private JComboBox<Room> roomsAvailable;
+    private JComboBox<String> availability;
+
     private RoomDAO rDAO;
 
     public RoomUI() {
-
         rDAO = new RoomDAO();
 
-        setTitle("Hospital's Room Management");
-        setSize(550, 450);
+        setTitle("Room Management");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800, 500);
         setLocationRelativeTo(null);
-        setLayout(new FlowLayout(FlowLayout.LEFT));
+        setLayout(new BorderLayout(10, 10));
+
         initializeUI();
         setVisible(true);
     }
 
     private void initializeUI() {
 
-        JPanel topPanel = new JPanel(new FlowLayout());
-        // topPanel.setBorder()
+        // ===== TOP PANEL (Form Section) =====
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createTitledBorder("Add Room"));
 
-        topPanel.add(new JLabel("Room Number: "));
-        roomNumField = new JTextField(10);
-        topPanel.add(roomNumField);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        topPanel.add(new JLabel("Room Type: "));
-        typeField = new JTextField(10);
-        topPanel.add(typeField);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(new JLabel("Room Number:"), gbc);
 
-        topPanel.add(new JLabel("Price per Day: "));
-        priceField = new JTextField(10);
-        topPanel.add(priceField);
+        gbc.gridx = 1;
+        roomNumField = new JTextField(15);
+        formPanel.add(roomNumField, gbc);
 
-        topPanel.add(new JLabel("View All Rooms: "));
-        displayArea = new JTextArea(10, 20);
-        topPanel.add(displayArea);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(new JLabel("Room Type:"), gbc);
 
-        JButton addBtn = new JButton("ADD");
-        JButton deleteBtn = new JButton("DELETE");
-        JButton viewBtn = new JButton("VIEW");
+        gbc.gridx = 1;
+        typeField = new JTextField(15);
+        formPanel.add(typeField, gbc);
 
-        topPanel.add(addBtn);
-        topPanel.add(deleteBtn);
-        topPanel.add(viewBtn);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        formPanel.add(new JLabel("Price per Day:"), gbc);
 
+        gbc.gridx = 1;
+        priceField = new JTextField(15);
+        formPanel.add(priceField, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        JButton addBtn = new JButton("Add Room");
+        formPanel.add(addBtn, gbc);
+
+        add(formPanel, BorderLayout.NORTH);
+
+        // --------------- MID PANEL (Table) ------------------------
+        String[] columns = { "Room No", "Type", "Price", "Availability" };
+        tableModel = new DefaultTableModel(columns, 0);
+        roomTable = new JTable(tableModel);
+
+        JScrollPane scrollPane = new JScrollPane(roomTable);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("All Rooms"));
+
+        add(scrollPane, BorderLayout.CENTER);
+
+        // ------------------BOTTOM PANEL (Update) --------------------------------
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
+        bottomPanel.setBorder(BorderFactory.createTitledBorder("Update Room Availability"));
+
+        roomsAvailable = new JComboBox<>();
+        loadRooms();
+
+        JButton updateBtn = new JButton("Update");
+
+        String[] lists = { "AVAILABLE", "OCCUPIED", "MAINTENANCE", "INACTIVE" };
+        availability = new JComboBox<>();
+        for (String str : lists) {
+            availability.addItem(str);
+        }
+        bottomPanel.add(new JLabel("Select Room:"));
+        bottomPanel.add(roomsAvailable);
+        bottomPanel.add(availability);
+        bottomPanel.add(updateBtn);
+
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        // ===== Button Actions =====
         addBtn.addActionListener(e -> addRoom());
-        deleteBtn.addActionListener(e -> deleteRoom());
-        viewBtn.addActionListener(e -> viewRooms());
+        updateBtn.addActionListener(e -> updateRoom());
 
-        add(topPanel);
+        refreshTable();
+    }
+
+    private void loadRooms() {
+        roomsAvailable.removeAllItems();
+        for (Room r : rDAO.getAllRooms()) {
+            roomsAvailable.addItem(r);
+        }
     }
 
     private void addRoom() {
-        String room_no = roomNumField.getText().trim();
-        String type = typeField.getText().trim();
-        String price = priceField.getText().trim();
+        try {
+            int roomNo = Integer.parseInt(roomNumField.getText().trim());
+            String type = typeField.getText().trim();
+            double price = Double.parseDouble(priceField.getText().trim());
 
-        if (room_no.isEmpty() || type.isEmpty() || price.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "All fields are required.");
-            return;
-        }
+            if (type.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "All fields are required.");
+                return;
+            }
 
-        Room room = new Room();
-        room.setRoomNo(Integer.parseInt(room_no));
-        room.setRoomType(type);
-        room.setPricePerDay(Double.parseDouble(price));
-        room.setAvailability("AVAILABLE");
+            Room room = new Room();
+            room.setRoomNo(roomNo);
+            room.setRoomType(type);
+            room.setPricePerDay(price);
+            room.setAvailability("AVAILABLE");
 
-        boolean success = rDAO.addRoom(room);
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Room added.");
-            roomNumField.setText("");
-            typeField.setText("");
-            priceField.setText("");
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to add Room.");
-        }
+            boolean success = rDAO.addRoom(room);
 
-    }
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Room added successfully.");
+                clearFields();
+                refreshTable();
+                loadRooms();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to add room.");
+            }
 
-    private void deleteRoom() {
-        String room_no = roomNumField.getText().trim();
-        if (room_no.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Enter room number to delete.");
-            return;
-        }
-
-        boolean success = rDAO.deleteRoom(Integer.parseInt(room_no));
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Room Deleted.");
-            roomNumField.setText("");
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to delete Room.");
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Room number and price must be numeric.");
         }
     }
 
-    private void viewRooms() {
+    private void updateRoom() {
+        Room room = (Room) roomsAvailable.getSelectedItem();
+        String avail = (String) availability.getSelectedItem();
+
+        if (room == null) {
+            JOptionPane.showMessageDialog(this, "Select a room to delete.");
+            return;
+        }
+        if (avail.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Mark Availability.");
+            return;
+        }
+
+        boolean success = rDAO.updateRoomAvailability(room.getRoomNo(), avail);
+
+        if (success) {
+            JOptionPane.showMessageDialog(this, "Room Updated successfully.");
+            refreshTable();
+            loadRooms();
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to update room.");
+        }
+    }
+
+    private void refreshTable() {
+        tableModel.setRowCount(0);
+
         List<Room> rooms = rDAO.getAllRooms();
 
-        displayArea.setText("");
-
         for (Room room : rooms) {
-            displayArea.append(
-                    "   Room No.: " +
-                            room.getRoomNo() +
-                            " | Type: " +
-                            room.getRoomType() +
-                            " | Price per Day: " +
-                            room.getPricePerDay() +
-                            " | Availability: " +
-                            (room.isAvailable() ? "Yes" : "No") +
-                            "\n");
+            tableModel.addRow(new Object[] {
+                    room.getRoomNo(),
+                    room.getRoomType(),
+                    room.getPricePerDay(),
+                    room.getAvailability()
+            });
         }
+    }
+
+    private void clearFields() {
+        roomNumField.setText("");
+        typeField.setText("");
+        priceField.setText("");
     }
 
     public static void main(String[] args) {
-        new RoomUI();
+        SwingUtilities.invokeLater(RoomUI::new);
     }
 }

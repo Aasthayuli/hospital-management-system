@@ -5,172 +5,214 @@ import hospital.model.Room;
 import hospital.model.Doctor;
 import hospital.dao.RoomDAO;
 import hospital.dao.DoctorDAO;
-import hospital.dao.PatientDAO;
+
 import hospital.service.AdmissionService;
 
 import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
 
-import java.util.*;
-import java.util.List;
-
 public class PatientAdmissionUI extends JFrame {
 
-    private JTextField nameField;
-    private JTextField ageField;
-    private JComboBox<String> genders;
-    private JTextField phoneField;
-    private JTextField addressField;
-    private JTextField diseaseField;
-    private JComboBox<Doctor> doctors;
-    private JComboBox<Room> rooms;
-    private JTextField deposited;
-    private JTextField totalBill;
+    private JTextField nameField, ageField, phoneField, addressField,
+            diseaseField, depositedField, totalBillField;
 
-    RoomDAO rDAO;
-    DoctorDAO drDAO;
-    PatientDAO pDAO;
+    private JComboBox<String> genderBox;
+    private JComboBox<Doctor> doctorBox;
+    private JComboBox<Room> roomBox;
 
-    // AdmissionService
-    private AdmissionService AdService;
+    private AdmissionService admissionService;
+    private RoomDAO roomDAO;
+    private DoctorDAO doctorDAO;
 
     public PatientAdmissionUI() {
-        AdService = new AdmissionService();
-        rDAO = new RoomDAO();
-        drDAO = new DoctorDAO();
-        pDAO = new PatientDAO();
+
+        admissionService = new AdmissionService();
+        roomDAO = new RoomDAO();
+        doctorDAO = new DoctorDAO();
 
         setTitle("Patient Admission");
-        setSize(600, 700);
+        setSize(750, 650);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout());
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout(15, 15));
+
         initializeUI();
         setVisible(true);
-
     }
 
     private void initializeUI() {
-        JPanel panel = new JPanel(new FlowLayout());
-        // panel.setBorder();
 
-        panel.add(new JLabel("Patient Name: "));
-        nameField = new JTextField(10);
-        panel.add(nameField);
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createTitledBorder("Admit Patient"));
 
-        panel.add(new JLabel("Age: "));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 10, 8, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        int y = 0;
+
+        // ===== PATIENT INFO =====
+        nameField = new JTextField(15);
         ageField = new JTextField(5);
-        panel.add(ageField);
+        phoneField = new JTextField(12);
+        addressField = new JTextField(15);
+        diseaseField = new JTextField(15);
 
-        panel.add(new JLabel("Gender: "));
-        List<String> list = new ArrayList<>();
-        list.add("MALE");
-        list.add("FEMALE");
-        list.add("OTHER");
-        genders = new JComboBox<>();
-        for (String str : list) {
-            genders.addItem(str);
+        genderBox = new JComboBox<>(new String[] { "MALE", "FEMALE", "OTHER" });
+
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Name:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(nameField, gbc);
+
+        y++;
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Age:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(ageField, gbc);
+
+        y++;
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Gender:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(genderBox, gbc);
+
+        y++;
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Phone:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(phoneField, gbc);
+
+        y++;
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Address:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(addressField, gbc);
+
+        y++;
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Disease:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(diseaseField, gbc);
+
+        // ===== DOCTOR & ROOM =====
+        y++;
+        doctorBox = new JComboBox<>();
+        for (Doctor d : doctorDAO.getAllDr()) {
+            doctorBox.addItem(d);
         }
-        panel.add(genders);
 
-        panel.add(new JLabel("Contact: "));
-        phoneField = new JTextField(10);
-        panel.add(phoneField);
-
-        panel.add(new JLabel("Address: "));
-        addressField = new JTextField(10);
-        panel.add(addressField);
-
-        panel.add(new JLabel("Disease: "));
-        diseaseField = new JTextField(10);
-        panel.add(diseaseField);
-
-        doctors = new JComboBox<>();
-        for (Doctor dr : drDAO.getAllDr()) {
-            doctors.addItem(dr);
+        roomBox = new JComboBox<>();
+        for (Room r : roomDAO.getAvailableRooms()) {
+            roomBox.addItem(r);
         }
-        panel.add(doctors);
 
-        panel.add(new JLabel("Select available rooms: "));
-        rooms = new JComboBox<>();
-        for (Room r : rDAO.getAvailableRooms()) {
-            rooms.addItem(r);
-        }
-        panel.add(rooms);
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Assign Doctor:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(doctorBox, gbc);
 
-        panel.add(new JLabel("Deposited: "));
-        deposited = new JTextField(10);
-        panel.add(deposited);
+        y++;
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Select Room:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(roomBox, gbc);
 
-        panel.add(new JLabel("Total Bill: "));
-        totalBill = new JTextField(10);
-        panel.add(totalBill);
+        // ===== BILLING =====
+        y++;
+        depositedField = new JTextField(10);
+        totalBillField = new JTextField(10);
 
-        JButton addBtn = new JButton("ADMIT");
-        JButton viewAdmittedBtn = new JButton("VIEW ADMITTED PATIENTS");
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Deposit Amount:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(depositedField, gbc);
 
-        panel.add(addBtn);
-        panel.add(viewAdmittedBtn);
+        y++;
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Total Estimated Bill:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(totalBillField, gbc);
 
-        addBtn.addActionListener(e -> admitPatient());
-        viewAdmittedBtn.addActionListener((e) -> {
-            new AdmittedPatientsUI();
-        });
+        add(formPanel, BorderLayout.CENTER);
 
-        add(panel);
+        // ===== BUTTON PANEL =====
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 10));
 
+        JButton admitBtn = new JButton("Admit Patient");
+        JButton viewBtn = new JButton("View Patients");
+
+        buttonPanel.add(admitBtn);
+        buttonPanel.add(viewBtn);
+
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        admitBtn.addActionListener(e -> admitPatient());
+        viewBtn.addActionListener(e -> new PatientDetailsUI());
     }
 
     private void admitPatient() {
-        String name = nameField.getText().trim();
-        String ageText = ageField.getText().trim();
-        String gender = (String) genders.getSelectedItem();
-        String phone = phoneField.getText().trim();
-        String address = addressField.getText().trim();
-        String disease = diseaseField.getText().trim();
-        Doctor dr = (Doctor) doctors.getSelectedItem();
-        String depositText = deposited.getText().trim();
-        String totalText = totalBill.getText().trim();
-        Room rm = (Room) rooms.getSelectedItem();
 
-        if (name.isEmpty() || ageText.isEmpty() || gender.isEmpty()
-                || phone.isEmpty() || address.isEmpty() || disease.isEmpty() ||
-                dr == null || depositText.isEmpty() || totalText.isEmpty() || rm == null) {
-            JOptionPane.showMessageDialog(this, "All fields are required.");
-            return;
-        }
-
-        int age;
-        BigDecimal deposit, total;
         try {
-            age = Integer.parseInt(ageText);
-            deposit = new BigDecimal(depositText);
-            total = new BigDecimal(totalText);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Age, Deposit and total bill must be number.");
-            return;
+            String name = nameField.getText().trim();
+            int age = Integer.parseInt(ageField.getText().trim());
+            String gender = (String) genderBox.getSelectedItem();
+            String phone = phoneField.getText().trim();
+            String address = addressField.getText().trim();
+            String disease = diseaseField.getText().trim();
+            Doctor doctor = (Doctor) doctorBox.getSelectedItem();
+            Room room = (Room) roomBox.getSelectedItem();
+            BigDecimal deposit = new BigDecimal(depositedField.getText().trim());
+            BigDecimal total = new BigDecimal(totalBillField.getText().trim());
+
+            if (name.isEmpty() || phone.isEmpty() || address.isEmpty()
+                    || disease.isEmpty() || doctor == null || room == null) {
+                JOptionPane.showMessageDialog(this, "All fields are required.");
+                return;
+            }
+
+            Patient patient = new Patient(
+                    name, age, gender, phone, address, disease,
+                    doctor.getDoctorId(), room.getRoomNo(),
+                    deposit, total);
+
+            boolean success = admissionService.admitPatient(patient);
+
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Patient admitted successfully.");
+                clearFields();
+            } else {
+                JOptionPane.showMessageDialog(this, "Admission failed.");
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Age, Deposit and Total must be valid numbers.");
         }
+    }
 
-        Patient p = new Patient(name, age, gender, phone, address, disease, dr.getDoctorId(), rm.getRoomNo(), deposit,
-                total);
-
-        boolean success = AdService.admitPatient(p);
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Patient admitted Successfully.");
-            nameField.setText("");
-            ageField.setText("");
-            phoneField.setText("");
-            addressField.setText("");
-            diseaseField.setText("");
-            deposited.setText("");
-            totalBill.setText("");
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to Admit Patient.");
-        }
-
+    private void clearFields() {
+        nameField.setText("");
+        ageField.setText("");
+        phoneField.setText("");
+        addressField.setText("");
+        diseaseField.setText("");
+        depositedField.setText("");
+        totalBillField.setText("");
     }
 
     public static void main(String[] args) {
-        new PatientAdmissionUI();
+        SwingUtilities.invokeLater(PatientAdmissionUI::new);
     }
 }

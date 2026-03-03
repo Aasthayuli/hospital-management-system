@@ -9,39 +9,33 @@ import java.awt.event.ActionEvent;
 
 public class LoginUI extends JFrame {
 
-    // username field
     private JTextField usernameField;
-    // password field
     private JPasswordField passwordField;
-    // login button
     private JButton loginButton;
 
-    // UserDAO object
     private UserDAO userDAO;
 
-    // constructor
     public LoginUI() {
         userDAO = new UserDAO();
 
         setTitle("Hospital Management System - Login");
-        setSize(400, 250); // =================================Currently hard coded===============
+        setSize(400, 250);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setLayout(new FlowLayout());
 
         initializeUI();
         setVisible(true);
     }
 
     private void initializeUI() {
-        // panel to add all fields and button
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(3, 2, 10, 10));
+        panel.setLayout(new GridLayout(4, 2, 5, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
 
         panel.add(new JLabel("Username: "));
-        usernameField = new JTextField();
+        usernameField = new JTextField(15);
         panel.add(usernameField);
 
         panel.add(new JLabel("Password: "));
@@ -58,7 +52,6 @@ public class LoginUI extends JFrame {
     }
 
     private void handleLogin(ActionEvent e) {
-        // username , password, JOptionPane
         String userName = usernameField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
 
@@ -67,14 +60,12 @@ public class LoginUI extends JFrame {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        // getting username and password through UserDAO
         User user = userDAO.authenticate(userName, password);
 
         if (user == null) {
             JOptionPane.showMessageDialog(this, "Invalid credentials", "Login failed. ", JOptionPane.ERROR_MESSAGE);
         }
 
-        // successful login -> close login window and opems dashboard
         JOptionPane.showMessageDialog(this, "Welcome " + user.getUsername());
 
         dispose();

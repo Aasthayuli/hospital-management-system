@@ -2,101 +2,151 @@ package hospital.ui;
 
 import hospital.dao.DoctorDAO;
 import hospital.dao.DepartmentDAO;
+import hospital.dao.PatientDAO;
 import hospital.model.Department;
+import hospital.model.Patient;
 import hospital.model.Doctor;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 public class DoctorUI extends JFrame {
 
-    JTextField nameField;
-    JTextField genderField;
-    JTextField salaryField;
-    JTextField emailField;
-    JTextField phoneField;
-    JComboBox<Department> deptDropdown;
-    JComboBox<Doctor> drDropdown;
-    JTextArea displayArea;
+    private JTextField nameField, genderField, salaryField, emailField, phoneField;
+    private JComboBox<Department> deptDropdown;
+    private JTable doctorTable;
+    private DefaultTableModel tableModel;
 
-    DoctorDAO drDAO;
-    DepartmentDAO deptDAO;
+    private DoctorDAO drDAO;
+    private DepartmentDAO deptDAO;
+    private PatientDAO pDAO;
 
     public DoctorUI() {
+
         drDAO = new DoctorDAO();
         deptDAO = new DepartmentDAO();
-        nameField = new JTextField(10);
-        genderField = new JTextField(10);
-        salaryField = new JTextField(10);
-        emailField = new JTextField(10);
-        phoneField = new JTextField(10);
+        pDAO = new PatientDAO();
 
         setTitle("Doctor Management");
-        setLayout(new FlowLayout());
-        initializeUI();
-        pack();
+        setSize(900, 550);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout(15, 15));
+
+        initializeUI();
         setVisible(true);
     }
 
     private void initializeUI() {
 
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        topPanel.add(new JLabel("Doctor Name: "));
-        topPanel.add(nameField);
-        topPanel.add(new JLabel("Gender: "));
-        topPanel.add(genderField);
-        topPanel.add(new JLabel("Salary: "));
-        topPanel.add(salaryField);
-        topPanel.add(new JLabel("Email: "));
-        topPanel.add(emailField);
-        topPanel.add(new JLabel("Phone: "));
-        topPanel.add(phoneField);
+        // ---------------------- FORM PANEL ----------------------
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createTitledBorder("Add Doctor"));
 
-        List<Department> list = deptDAO.getAllDepartments();
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 10, 8, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        nameField = new JTextField(15);
+        genderField = new JTextField(10);
+        salaryField = new JTextField(10);
+        emailField = new JTextField(15);
+        phoneField = new JTextField(12);
+
         deptDropdown = new JComboBox<>();
+        loadDepartments();
+
+        int y = 0;
+
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Name:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(nameField, gbc);
+
+        gbc.gridx = 2;
+        formPanel.add(new JLabel("Gender:"), gbc);
+        gbc.gridx = 3;
+        formPanel.add(genderField, gbc);
+
+        y++;
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Salary:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(salaryField, gbc);
+
+        gbc.gridx = 2;
+        formPanel.add(new JLabel("Email:"), gbc);
+        gbc.gridx = 3;
+        formPanel.add(emailField, gbc);
+
+        y++;
+        gbc.gridx = 0;
+        gbc.gridy = y;
+        formPanel.add(new JLabel("Phone:"), gbc);
+        gbc.gridx = 1;
+        formPanel.add(phoneField, gbc);
+
+        gbc.gridx = 2;
+        formPanel.add(new JLabel("Department:"), gbc);
+        gbc.gridx = 3;
+        formPanel.add(deptDropdown, gbc);
+
+        y++;
+        gbc.gridx = 3;
+        gbc.gridy = y;
+        JButton addBtn = new JButton("Add Doctor");
+        formPanel.add(addBtn, gbc);
+
+        add(formPanel, BorderLayout.NORTH);
+
+        // ---------------------- TABLE PANEL ----------------------
+        String[] columns = { "ID", "Name", "Gender", "Department", "Phone", "Salary" };
+        tableModel = new DefaultTableModel(columns, 0);
+        doctorTable = new JTable(tableModel);
+        doctorTable.setFillsViewportHeight(true);
+
+        JScrollPane scrollPane = new JScrollPane(doctorTable);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("All Doctors"));
+
+        add(scrollPane, BorderLayout.CENTER);
+
+        // ---------------------- BOTTOM PANEL ----------------------
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        JButton deleteBtn = new JButton("Delete Selected");
+        JButton refreshBtn = new JButton("Refresh");
+
+        bottomPanel.add(deleteBtn);
+        bottomPanel.add(refreshBtn);
+
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        // ---------------------- ACTIONS ----------------------
+        addBtn.addActionListener(e -> addDoctor());
+        deleteBtn.addActionListener(e -> deleteDoctor());
+        refreshBtn.addActionListener(e -> refreshTable());
+    }
+
+    private void loadDepartments() {
+        deptDropdown.removeAllItems();
+        List<Department> list = deptDAO.getAllDepartments();
         for (Department dept : list) {
             deptDropdown.addItem(dept);
         }
-        List<Doctor> list2 = drDAO.getAllDr();
-        drDropdown = new JComboBox<>();
-        for (Doctor doc : list2) {
-            drDropdown.addItem(doc);
-        }
-        topPanel.add(deptDropdown);
-        topPanel.add(drDropdown);
-
-        JButton addBtn = new JButton("Add Doctor");
-        JButton deleteBtn = new JButton("Delete Doctor");
-
-        add(topPanel);
-
-        displayArea = new JTextArea(10, 40);
-        displayArea.setEditable(false);
-        add(new JScrollPane(displayArea));
-
-        // bottom Panel
-        JButton viewBtn = new JButton("View All Doctors");
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.add(addBtn);
-        bottomPanel.add(deleteBtn);
-        bottomPanel.add(viewBtn);
-        add(bottomPanel);
-
-        // button actions
-        addBtn.addActionListener(e -> addDoctor());
-        deleteBtn.addActionListener(e -> deleteDoctor());
-        viewBtn.addActionListener(e -> viewDoctors());
     }
 
     private void addDoctor() {
+
         String name = nameField.getText().trim();
         String gender = genderField.getText().trim();
         String phone = phoneField.getText().trim();
         String email = emailField.getText().trim();
+
         if (name.isEmpty() || gender.isEmpty() || phone.isEmpty()
                 || email.isEmpty() || salaryField.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "All fields are required.");
@@ -112,7 +162,10 @@ public class DoctorUI extends JFrame {
         }
 
         Department selectedDept = (Department) deptDropdown.getSelectedItem();
-        int deptId = selectedDept.getDeptId();
+        if (selectedDept == null) {
+            JOptionPane.showMessageDialog(this, "Select a department.");
+            return;
+        }
 
         Doctor dr = new Doctor();
         dr.setName(name);
@@ -120,43 +173,73 @@ public class DoctorUI extends JFrame {
         dr.setPhone(phone);
         dr.setEmail(email);
         dr.setSalary(salary);
-        dr.setDeptId(deptId);
+        dr.setDeptId(selectedDept.getDeptId());
 
         boolean success = drDAO.addDoctor(dr);
 
         if (success) {
-            JOptionPane.showMessageDialog(this, "Doctor added Successfully.");
+            JOptionPane.showMessageDialog(this, "Doctor added successfully.");
+            clearFields();
+            refreshTable();
         } else {
             JOptionPane.showMessageDialog(this, "Failed to add Doctor.");
         }
     }
 
     private void deleteDoctor() {
-        Doctor dr = (Doctor) drDropdown.getSelectedItem();
-        boolean success = drDAO.deleteDoctor(dr.getDoctorId());
+
+        int selectedRow = doctorTable.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Select doctor from table to delete.");
+            return;
+        }
+
+        int doctorId = (int) tableModel.getValueAt(selectedRow, 0);
+
+        List<Patient> list = pDAO.getPatientsRelDoc(doctorId);
+        if (list.size() > 0) {
+            JOptionPane.showMessageDialog(this, "Cannot delete doctor (may be assigned to patients).");
+            return;
+        }
+
+        boolean success = drDAO.deleteDoctor(doctorId);
 
         if (success) {
             JOptionPane.showMessageDialog(this, "Doctor deleted.");
+            refreshTable();
         } else {
             JOptionPane.showMessageDialog(this, "Failed to delete Doctor.");
         }
-
     }
 
-    private void viewDoctors() {
+    private void refreshTable() {
+
+        tableModel.setRowCount(0);
+
         List<Doctor> list = drDAO.getAllDr();
-        displayArea.setText("");
 
         for (Doctor doc : list) {
-            displayArea.append("    ID: " + doc.getDoctorId()
-                    + " | Name: " + doc.getName()
-                    + " | Department ID: " + doc.getDeptId()
-                    + " | Phone no.: " + doc.getPhone()
-                    + "\n");
+            tableModel.addRow(new Object[] {
+                    doc.getDoctorId(),
+                    doc.getName(),
+                    doc.getGender(),
+                    doc.getDeptId(),
+                    doc.getPhone(),
+                    doc.getSalary()
+            });
         }
     }
 
+    private void clearFields() {
+        nameField.setText("");
+        genderField.setText("");
+        salaryField.setText("");
+        emailField.setText("");
+        phoneField.setText("");
+    }
+
     public static void main(String[] args) {
-        new DoctorUI();
+        SwingUtilities.invokeLater(DoctorUI::new);
     }
 }

@@ -64,6 +64,7 @@ public class LoginUI extends JFrame {
 
         if (user == null) {
             JOptionPane.showMessageDialog(this, "Invalid credentials", "Login failed. ", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         JOptionPane.showMessageDialog(this, "Welcome " + user.getUsername());

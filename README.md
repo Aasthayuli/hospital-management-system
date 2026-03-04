@@ -53,6 +53,22 @@ This project manages core hospital operations including Role based login, patien
 
 ---
 
+## Watch Video
+
+[Working Demo](https://drive.google.com/file/d/1A5c9YjU0tJTsZ49Mhgpp5A2nVkqJYCtd/view?usp=sharing)
+
+## Screenshots
+
+#### Doctor Management
+
+![Doctor](screenshots/DrManagement.png)
+
+![Patient](screenshots/PatientManagement.png)
+
+![Billing](screenshots/BillingManagement.png)
+
+---
+
 ## 🧠 Architecture
 
 The project follows a **3-layer architecture**:

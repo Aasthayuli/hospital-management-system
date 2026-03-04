@@ -24,6 +24,7 @@ public class BillingService {
 
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             System.out.println("Invalid deposit amount.");
+            return false;
         }
 
         Patient pt = pDao.getPatientById(patient_id);
@@ -41,6 +42,7 @@ public class BillingService {
     public boolean addCharge(int patient_id, BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             System.out.println("Invalid Charge amount.");
+            return false;
         }
 
         Patient pt = pDao.getPatientById(patient_id);

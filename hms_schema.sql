@@ -14,7 +14,7 @@ CREATE TABLE ambulance ( ambulance_id INT PRIMARY KEY AUTO_INCREMENT, driver_nam
 
 -- dummy values to insert
 SELECT * FROM users; 
-INSERT INTO users(user_id, username, email, password_hash, role) VALUES (1, "Admin", "admin123@gmail.com", "123456789", "ADMIN");
+-- insert admin from UserUI.java after creating above DB and respective tables by creating a main() function in it.
 INSERT INTO users(user_id, username, email, password_hash, role) VALUES (2, "Aasthayuli", "aastha123@gmail.com", "123456", "DOCTOR");
 
 SELECT * FROM department;

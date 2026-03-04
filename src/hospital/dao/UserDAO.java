@@ -2,6 +2,7 @@ package hospital.dao;
 
 import hospital.config.DBConnection;
 import hospital.model.User;
+import hospital.util.PasswordUtil;
 
 import java.sql.*;
 import java.util.List;
@@ -16,7 +17,7 @@ public class UserDAO {
                 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getEmail());
-            stmt.setString(3, user.getPasswordHash());
+            stmt.setString(3, PasswordUtil.hashPassword(user.getPassword()));
             stmt.setString(4, user.getRole());
 
             int affected = stmt.executeUpdate();
@@ -37,12 +38,13 @@ public class UserDAO {
     }
 
     // Login Validation
-    public User authenticate(String username, String passwordHash) {
+    public User authenticate(String username, String password) {
         String sql = "SELECT * FROM users WHERE username = ? AND password_hash= ?";
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
-            stmt.setString(2, passwordHash);
+            String hashedInput = PasswordUtil.hashPassword(password);
+            stmt.setString(2, hashedInput);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -93,17 +95,19 @@ public class UserDAO {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM users";
         try (Connection conn = DBConnection.getConnection();
-                Statement stmt = conn.createStatement(); // ===============================????????????????????????????????=========================
-                ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                list.add(new User(
-                        rs.getInt("user_id"),
-                        rs.getString("username"),
-                        rs.getString("email"),
-                        rs.getString("password_hash"),
-                        rs.getString("role"),
-                        rs.getTimestamp("created_at").toLocalDateTime()));
+                PreparedStatement stmt = conn.prepareStatement(sql);) {
+            try (ResultSet rs = stmt.executeQuery(sql)) {
+                while (rs.next()) {
+                    list.add(new User(
+                            rs.getInt("user_id"),
+                            rs.getString("username"),
+                            rs.getString("email"),
+                            rs.getString("password_hash"),
+                            rs.getString("role"),
+                            rs.getTimestamp("created_at").toLocalDateTime()));
+                }
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -113,12 +117,12 @@ public class UserDAO {
     // update users
     // ============================currently not in use =============
     public boolean updateUser(User user) {
-        String sql = "UPDATE users SET username = ?, email = ?, password_hash = ?, role= ?, WHERE user_id = ?";
+        String sql = "UPDATE users SET username = ?, email = ?, password_hash = ?, role= ? WHERE user_id = ?";
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql);) {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getEmail());
-            stmt.setString(3, user.getPasswordHash());
+            stmt.setString(3, user.getPassword());
             stmt.setString(4, user.getRole());
             stmt.setInt(5, user.getUserId());
 

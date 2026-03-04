@@ -132,7 +132,7 @@ public class UserUI extends JFrame {
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
-        user.setPasswordHash(password);
+        user.setPassword(password);
         user.setRole(role);
 
         boolean success = userDAO.addUser(user);
@@ -185,5 +185,9 @@ public class UserUI extends JFrame {
         passwordField.setText("");
         roleCombo.setSelectedIndex(0);
     }
+
+    // public static void main(String[] args) {
+    // new UserUI();
+    // }
 
 }

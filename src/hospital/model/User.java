@@ -7,7 +7,7 @@ public class User {
     private int userId;
     private String username;
     private String email;
-    private String passwordHash;
+    private String password;
     private String role;
     private LocalDateTime createdAt;
 
@@ -16,22 +16,22 @@ public class User {
     }
 
     // Constructor for insert (without ID & createdAt)
-    public User(String username, String email, String passwordHash, String role) {
+    public User(String username, String email, String password, String role) {
         this.username = username;
         this.email = email;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.role = role;
     }
 
     // Constructor with all fields (for fetching from DB)
     public User(int userId, String username, String email,
-            String passwordHash, String role,
+            String password, String role,
             LocalDateTime createdAt) {
 
         this.userId = userId;
         this.username = username;
         this.email = email;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.role = role;
         this.createdAt = createdAt;
     }
@@ -68,15 +68,15 @@ public class User {
         this.email = email;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        if (passwordHash == null || passwordHash.trim().isEmpty()) {
+    public void setPassword(String password) {
+        if (password == null || password.trim().isEmpty()) {
             throw new IllegalArgumentException("Password hash cannot be empty.");
         }
-        this.passwordHash = passwordHash;
+        this.password = password;
     }
 
     public String getRole() {

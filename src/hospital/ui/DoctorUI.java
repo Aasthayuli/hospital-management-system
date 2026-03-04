@@ -15,8 +15,9 @@ import java.util.List;
 
 public class DoctorUI extends JFrame {
 
-    private JTextField nameField, genderField, salaryField, emailField, phoneField;
+    private JTextField nameField, salaryField, emailField, phoneField;
     private JComboBox<Department> deptDropdown;
+    private JComboBox<String> genders;
     private JTable doctorTable;
     private DefaultTableModel tableModel;
 
@@ -51,7 +52,11 @@ public class DoctorUI extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         nameField = new JTextField(15);
-        genderField = new JTextField(10);
+        genders = new JComboBox<>();
+        String[] list = { "MALE", "FEMALE", "OTHER" };
+        for (String gen : list) {
+            genders.addItem(gen);
+        }
         salaryField = new JTextField(10);
         emailField = new JTextField(15);
         phoneField = new JTextField(12);
@@ -70,7 +75,7 @@ public class DoctorUI extends JFrame {
         gbc.gridx = 2;
         formPanel.add(new JLabel("Gender:"), gbc);
         gbc.gridx = 3;
-        formPanel.add(genderField, gbc);
+        formPanel.add(genders, gbc);
 
         y++;
         gbc.gridx = 0;
@@ -119,17 +124,15 @@ public class DoctorUI extends JFrame {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         JButton deleteBtn = new JButton("Delete Selected");
-        JButton refreshBtn = new JButton("Refresh");
-
         bottomPanel.add(deleteBtn);
-        bottomPanel.add(refreshBtn);
 
         add(bottomPanel, BorderLayout.SOUTH);
 
         // ---------------------- ACTIONS ----------------------
         addBtn.addActionListener(e -> addDoctor());
         deleteBtn.addActionListener(e -> deleteDoctor());
-        refreshBtn.addActionListener(e -> refreshTable());
+
+        refreshTable();
     }
 
     private void loadDepartments() {
@@ -143,7 +146,7 @@ public class DoctorUI extends JFrame {
     private void addDoctor() {
 
         String name = nameField.getText().trim();
-        String gender = genderField.getText().trim();
+        String gender = (String) genders.getSelectedItem();
         String phone = phoneField.getText().trim();
         String email = emailField.getText().trim();
 
@@ -233,7 +236,6 @@ public class DoctorUI extends JFrame {
 
     private void clearFields() {
         nameField.setText("");
-        genderField.setText("");
         salaryField.setText("");
         emailField.setText("");
         phoneField.setText("");

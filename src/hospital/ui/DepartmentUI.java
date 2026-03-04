@@ -72,15 +72,14 @@ public class DepartmentUI extends JFrame {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton deleteBtn = new JButton("Delete");
         bottomPanel.add(deleteBtn, gbc);
-        JButton viewBtn = new JButton("Refresh");
-        bottomPanel.add(viewBtn);
 
         add(bottomPanel, BorderLayout.SOUTH);
 
         // -------------------------- ACTIONS --------------------------
         addBtn.addActionListener(e -> addDepartment());
         deleteBtn.addActionListener(e -> deleteDepartment());
-        viewBtn.addActionListener(e -> refreshTable());
+
+        refreshTable();
     }
 
     private void addDepartment() {
@@ -128,7 +127,7 @@ public class DepartmentUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Department deleted.");
             refreshTable();
         } else {
-            JOptionPane.showMessageDialog(this, "Cannot delete department (may be linked to doctors).");
+            JOptionPane.showMessageDialog(this, "Failed to delete Department.");
         }
     }
 

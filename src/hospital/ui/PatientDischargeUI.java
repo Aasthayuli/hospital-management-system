@@ -126,7 +126,7 @@ public class PatientDischargeUI extends JFrame {
                     "Patient discharged successfully.");
 
             infoArea.setText("");
-            loadPatients(); // Refresh dropdown
+            loadPatients();
         } else {
             JOptionPane.showMessageDialog(this,
                     "Discharge failed. Check pending balance or patient status.");

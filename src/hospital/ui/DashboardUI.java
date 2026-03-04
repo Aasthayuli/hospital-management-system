@@ -15,7 +15,7 @@ public class DashboardUI extends JFrame {
 
                 setTitle("Hospital Management System - Dashboard");
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                setSize(900, 600);
+                setSize(1000, 800);
                 setLocationRelativeTo(null);
                 setLayout(new BorderLayout(15, 15));
 

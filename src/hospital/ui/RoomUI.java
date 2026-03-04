@@ -11,7 +11,7 @@ import java.util.List;
 public class RoomUI extends JFrame {
 
     private JTextField roomNumField;
-    private JTextField typeField;
+    private JComboBox<String> types;
     private JTextField priceField;
 
     private JTable roomTable;
@@ -26,7 +26,7 @@ public class RoomUI extends JFrame {
         rDAO = new RoomDAO();
 
         setTitle("Room Management");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 500);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
@@ -37,7 +37,7 @@ public class RoomUI extends JFrame {
 
     private void initializeUI() {
 
-        // ===== TOP PANEL (Form Section) =====
+        // TOP PANEL (Form)
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createTitledBorder("Add Room"));
 
@@ -58,8 +58,12 @@ public class RoomUI extends JFrame {
         formPanel.add(new JLabel("Room Type:"), gbc);
 
         gbc.gridx = 1;
-        typeField = new JTextField(15);
-        formPanel.add(typeField, gbc);
+        types = new JComboBox<>();
+        String[] list = { "PRIVATE", "ICU", "GENERAL" };
+        for (String type : list) {
+            types.addItem(type);
+        }
+        formPanel.add(types, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -107,7 +111,7 @@ public class RoomUI extends JFrame {
 
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // ===== Button Actions =====
+        // Button Actions
         addBtn.addActionListener(e -> addRoom());
         updateBtn.addActionListener(e -> updateRoom());
 
@@ -124,7 +128,7 @@ public class RoomUI extends JFrame {
     private void addRoom() {
         try {
             int roomNo = Integer.parseInt(roomNumField.getText().trim());
-            String type = typeField.getText().trim();
+            String type = (String) types.getSelectedItem();
             double price = Double.parseDouble(priceField.getText().trim());
 
             if (type.isEmpty()) {
@@ -195,7 +199,6 @@ public class RoomUI extends JFrame {
 
     private void clearFields() {
         roomNumField.setText("");
-        typeField.setText("");
         priceField.setText("");
     }
 

@@ -32,7 +32,7 @@ public class PatientAdmissionUI extends JFrame {
         doctorDAO = new DoctorDAO();
 
         setTitle("Patient Admission");
-        setSize(750, 650);
+        setSize(980, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(15, 15));

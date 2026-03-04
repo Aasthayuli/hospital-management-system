@@ -132,8 +132,4 @@ public class PatientDischargeUI extends JFrame {
                     "Discharge failed. Check pending balance or patient status.");
         }
     }
-
-    public static void main(String[] args) {
-        new PatientDischargeUI();
-    }
 }

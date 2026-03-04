@@ -186,7 +186,4 @@ public class UserUI extends JFrame {
         roleCombo.setSelectedIndex(0);
     }
 
-    public static void main(String[] args) {
-        new UserUI();
-    }
 }

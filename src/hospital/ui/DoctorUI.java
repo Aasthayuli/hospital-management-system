@@ -240,8 +240,4 @@ public class DoctorUI extends JFrame {
         emailField.setText("");
         phoneField.setText("");
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(DoctorUI::new);
-    }
 }

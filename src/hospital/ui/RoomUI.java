@@ -201,8 +201,4 @@ public class RoomUI extends JFrame {
         roomNumField.setText("");
         priceField.setText("");
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(RoomUI::new);
-    }
 }

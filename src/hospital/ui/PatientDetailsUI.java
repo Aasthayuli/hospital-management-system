@@ -152,7 +152,4 @@ public class PatientDetailsUI extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        new PatientDetailsUI();
-    }
 }

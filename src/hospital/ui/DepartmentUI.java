@@ -145,7 +145,4 @@ public class DepartmentUI extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(DepartmentUI::new);
-    }
 }

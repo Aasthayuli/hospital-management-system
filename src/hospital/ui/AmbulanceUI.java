@@ -194,7 +194,4 @@ public class AmbulanceUI extends JFrame {
         availabilityCombo.setSelectedIndex(0);
     }
 
-    public static void main(String[] args) {
-        new AmbulanceUI();
-    }
 }

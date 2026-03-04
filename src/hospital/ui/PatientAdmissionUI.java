@@ -215,7 +215,4 @@ public class PatientAdmissionUI extends JFrame {
         totalBillField.setText("");
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(PatientAdmissionUI::new);
-    }
 }

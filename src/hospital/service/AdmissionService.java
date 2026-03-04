@@ -2,6 +2,7 @@ package hospital.service;
 
 import hospital.dao.PatientDAO;
 import hospital.dao.RoomDAO;
+
 import hospital.model.Patient;
 import hospital.model.Room;
 
@@ -9,10 +10,12 @@ public class AdmissionService {
 
     private PatientDAO patientDAO;
     private RoomDAO roomDAO;
+    private BillingService bs;
 
     public AdmissionService() {
         patientDAO = new PatientDAO();
         roomDAO = new RoomDAO();
+        bs = new BillingService();
     }
 
     // admit patient
@@ -33,7 +36,10 @@ public class AdmissionService {
         // ->save patient
         boolean patientSaved = patientDAO.addPatient(patient);
 
-        if (!patientSaved) {
+        // add transaction
+        boolean depositAdded = bs.addDeposit(patient.getPatientId(), patient.getDeposit());
+
+        if (!patientSaved || !depositAdded) {
             System.out.println("Failed to admit patient.");
             return false;
         }

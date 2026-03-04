@@ -41,6 +41,7 @@ public class DoctorDAO {
     }
 
     // get doctor by id
+    // ============================currently not in use =============
     public Doctor getDrById(int id) {
         String sql = "SELECT * FROM doctor WHERE doctor_id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -94,6 +95,7 @@ public class DoctorDAO {
     }
 
     // Update doctor
+    // ============================currently not in use =============
     public boolean updateDoctor(Doctor dr) {
         String sql = "UPDATE doctor SET name = ?, gender = ?, phone = ?, email = ?, salary = ?, dept_id = ? WHERE doctor_id = ?";
 

@@ -6,7 +6,6 @@ import hospital.model.Patient;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import java.util.ArrayList;
 import java.math.BigDecimal;
 
@@ -103,18 +102,48 @@ public class PatientDAO {
     }
 
     // update discharge info
-    public boolean dischargePatient(int patientId, LocalDateTime dischargeTime, BigDecimal totalBill) { // =================??total
-                                                                                                        // Bill won't be
-                                                                                                        // used??????????
-        String sql = "UPDATE patient SET discharge_time = ?, status = 'DISCHARGED', total_bill = ? WHERE patient_id = ?";
+    public boolean dischargePatient(int patientId, LocalDateTime dischargeTime) {
+        String sql = "UPDATE patient SET discharge_time = ?, status = 'DISCHARGED' WHERE patient_id = ?";
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setTimestamp(1, Timestamp.valueOf(dischargeTime));
-            stmt.setBigDecimal(2, totalBill);
-            stmt.setInt(3, patientId);
+            stmt.setInt(2, patientId);
 
             return stmt.executeUpdate() == 1;
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    // update total Bill
+    public boolean updateTotalBill(Patient pt) {
+        String sql = "UPDATE patient SET total_bill = ? WHERE patient_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setBigDecimal(1, pt.getTotalBill());
+            stmt.setInt(2, pt.getPatientId());
+
+            return stmt.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean updateDeposits(int patient_id, BigDecimal amount) {
+        String sql = "UPDATE patient SET deposit = ? WHERE patient_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setBigDecimal(1, amount);
+            stmt.setInt(2, patient_id);
+
+            return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
             e.printStackTrace();
         }

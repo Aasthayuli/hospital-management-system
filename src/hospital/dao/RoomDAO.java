@@ -93,26 +93,6 @@ public class RoomDAO {
         return list;
     }
 
-    // update room
-    public boolean updateRoom(Room room) {
-        String sql = "UPDATE room SET room_type = ?, price_per_day = ?, availability = ? WHERE room_no = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, room.getRoomType());
-            stmt.setDouble(2, room.getPricePerDay());
-            stmt.setString(3, room.getAvailability());
-            stmt.setInt(4, room.getRoomNo());
-
-            return stmt.executeUpdate() == 1;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
     // Update room availability only (used during admission/ discharge)
     public boolean updateRoomAvailability(int roomNo, String availability) {
         String sql = "UPDATE room SET availability = ? WHERE room_no = ?";
@@ -128,17 +108,4 @@ public class RoomDAO {
         return false;
     }
 
-    // delete room
-    public boolean deleteRoom(int roomNo) {
-        String sql = "DELETE FROM room WHERE room_no = ?";
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, roomNo);
-
-            return stmt.executeUpdate() == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 }

@@ -179,7 +179,7 @@ public class Patient {
                 "| age " + age +
                 "| disease " + disease +
                 "| room No " + roomNo +
-                "| Status " + status;
+                "| " + status;
 
     }
 }

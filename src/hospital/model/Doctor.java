@@ -104,9 +104,9 @@ public class Doctor {
     @Override
     public String toString() {
         return "doctorId " + doctorId +
-                " | name '" + name +
-                " | gender '" + gender +
-                " | phone '" + phone +
+                " | name " + name +
+                " | gender " + gender +
+                " | phone " + phone +
                 " | deptId " + deptId;
     }
 }

@@ -44,6 +44,6 @@ public class Department {
     @Override
     public String toString() {
         return "deptId " + deptId +
-                " | deptName '" + deptName;
+                " | deptName " + deptName;
     }
 }

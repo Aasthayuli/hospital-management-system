@@ -68,6 +68,11 @@ public class BillingService {
     }
 
     public boolean refund(int patient_id, BigDecimal amount) {
+
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return false;
+        }
+
         BillingTransaction bt = new BillingTransaction();
         bt.setAmount(amount);
         bt.setPatient_id(patient_id);

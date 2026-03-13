@@ -161,6 +161,7 @@ public class BillingUI extends JFrame {
 
             BigDecimal deposits = bsDAO.getTotalByType(patientId, "DEPOSIT");
             BigDecimal charges = bsDAO.getTotalByType(patientId, "CHARGE");
+            BigDecimal refunds = bsDAO.getTotalByType(patientId, "REFUND");
             BigDecimal balance = billingService.calculateBalance(patientId);
 
             summaryArea.setText("");
@@ -168,6 +169,7 @@ public class BillingUI extends JFrame {
             summaryArea.append("=========== BILL SUMMARY ===========\n\n");
             summaryArea.append(String.format("%-20s : %s\n", "Total Deposits", deposits));
             summaryArea.append(String.format("%-20s : %s\n", "Extra Charges", charges));
+            summaryArea.append(String.format("%-20s : %s\n", "Total Refunds made", refunds));
             summaryArea.append("-------------------------------------\n");
             summaryArea.append(String.format("%-20s : %s\n", "Remaining Balance", balance));
 

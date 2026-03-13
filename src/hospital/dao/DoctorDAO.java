@@ -41,7 +41,6 @@ public class DoctorDAO {
     }
 
     // get doctor by id
-    // ============================currently not in use =============
     public Doctor getDrById(int id) {
         String sql = "SELECT * FROM doctor WHERE doctor_id = ?";
         try (Connection conn = DBConnection.getConnection();

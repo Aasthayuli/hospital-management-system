@@ -1,9 +1,11 @@
-## Project Structure
-
 ```
 └── 📁HMS
     └── 📁lib
         ├── mysql-connector-j-9.6.0.jar
+    └── 📁screenshots
+        ├── BillingManagement.png
+        ├── DrManagement.png
+        ├── PatientManagement.png
     └── 📁src
         └── 📁hospital
             └── 📁config
@@ -40,8 +42,11 @@
                 ├── PatientDischargeUI.java
                 ├── RoomUI.java
                 ├── UserUI.java
+            └── 📁util
+                ├── PasswordUtil.java
         ├── db.properties
     ├── .gitignore
     ├── hms_schema.sql
+    ├── project_structure.md
     └── README.md
 ```

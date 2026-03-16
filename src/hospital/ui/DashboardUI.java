@@ -60,10 +60,11 @@ public class DashboardUI extends JFrame {
                 JButton billingBtn = new JButton("Billing");
                 JButton dischargeBtn = new JButton("Discharge Patient");
                 JButton ambulanceBtn = new JButton("Ambulance");
+                JButton patientDetailBtn = new JButton("Patient Details");
 
                 JButton[] buttons = {
                                 departmentBtn, doctorBtn, roomBtn, userBtn,
-                                patientBtn, billingBtn, dischargeBtn, ambulanceBtn
+                                patientBtn, billingBtn, dischargeBtn, ambulanceBtn, patientDetailBtn
                 };
 
                 for (JButton btn : buttons) {
@@ -94,6 +95,8 @@ public class DashboardUI extends JFrame {
                 dashboardPanel.add(dischargeBtn, gbc);
                 gbc.gridx = 1;
                 dashboardPanel.add(ambulanceBtn, gbc);
+                gbc.gridx = 2;
+                dashboardPanel.add(patientDetailBtn, gbc);
 
                 add(dashboardPanel, BorderLayout.CENTER);
 
@@ -106,15 +109,33 @@ public class DashboardUI extends JFrame {
                 billingBtn.addActionListener(e -> new BillingUI());
                 dischargeBtn.addActionListener(e -> new PatientDischargeUI());
                 ambulanceBtn.addActionListener(e -> new AmbulanceUI());
+                patientDetailBtn.addActionListener(e -> new PatientDetailsUI());
                 logoutBtn.addActionListener(this::handleLogout);
 
                 // ---------------------- ROLE RESTRICTION ----------------------
-                if (!currentUser.getRole().equalsIgnoreCase("ADMIN")) {
+                String role = currentUser.getRole();
+
+                if (role.equalsIgnoreCase("ADMIN")) {
+                        // admin will see everything except patient operations
+                        patientBtn.setEnabled(false);
+                        billingBtn.setEnabled(false);
+                        dischargeBtn.setEnabled(false);
+                } else if (role.equalsIgnoreCase("RECEPTIONIST")) {
                         departmentBtn.setEnabled(false);
                         doctorBtn.setEnabled(false);
                         roomBtn.setEnabled(false);
                         userBtn.setEnabled(false);
+                } else if (role.equalsIgnoreCase("DOCTOR")) {
+                        departmentBtn.setEnabled(false);
+                        doctorBtn.setEnabled(false);
+                        roomBtn.setEnabled(false);
+                        userBtn.setEnabled(false);
+                        patientBtn.setEnabled(false);
+                        billingBtn.setEnabled(false);
+                        dischargeBtn.setEnabled(false);
+                        ambulanceBtn.setEnabled(false);
                 }
+
         }
 
         private void handleLogout(ActionEvent e) {

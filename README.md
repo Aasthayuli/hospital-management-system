@@ -59,13 +59,33 @@ This project manages core hospital operations including Role based login, patien
 
 ## Screenshots
 
-#### Doctor Management
+![Patient](screenshots/login.png)
 
-![Doctor](screenshots/DrManagement.png)
+![Doctor](screenshots/admin.png)
 
-![Patient](screenshots/PatientManagement.png)
+![Patient](screenshots/department.png)
+
+![Patient](screenshots/DrManagement.png)
+
+![Patient](screenshots/rooms.png)
+
+![Patient](screenshots/users.png)
+
+![Patient](screenshots/ambulance.png)
+
+![Patient](screenshots/doctorRole.png)
+
+![Patient](screenshots/patientDetails.png)
+
+![Patient](screenshots/receptionistRole.png)
+
+![Patient](screenshots/admittedPatients.png)
 
 ![Billing](screenshots/BillingManagement.png)
+
+![Patient](screenshots/PatientAdmission.png)
+
+![Patient](screenshots/patientDischarge.png)
 
 ---
 
